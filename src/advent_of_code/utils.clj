@@ -7,3 +7,7 @@
   (->> filename
        slurp
        str/split-lines))
+
+
+(defn replace-if-empty [s]
+  (if (= s "") "_" s))
