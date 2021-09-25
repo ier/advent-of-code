@@ -25,7 +25,9 @@
 (defn- parse-line [s]
   (let [parts (str/split s #" bags contain ")
         empty-children? (= "no other bags." (:second parts))
-        children (if empty-children? nil (parse-bag (second parts)))]
+        children (if empty-children?
+                   nil
+                   (parse-bag (second parts)))]
     [(first parts) (filter some? children)]))
 
 
@@ -48,13 +50,12 @@
       acc)))
 
 
-(defn solve []
-  (let [pattern "shiny gold"
-        lines (utils/file->vec-of-str "resources/inputs/2020/07.txt")
-        #_#_lines (utils/file->vec-of-str "resources/inputs/2020/07-test-sample.txt")
+(defn solve
+  [input-file-name pattern]
+  (let [lines (utils/file->vec-of-str input-file-name)
         all-bags (map parse-line lines)
         other (get-containers all-bags pattern 0)]
     (first (distinct (flatten other)))))
 
 
-(solve)
+(solve "resources/inputs/2020/07.txt" "shiny gold")
