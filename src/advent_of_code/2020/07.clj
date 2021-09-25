@@ -83,9 +83,10 @@
 
 (defn solve []
   (let [pattern "shiny gold"
-        lines (utils/file->vec-of-str "resources/inputs/2020/07.txt")
+        #_#_lines (utils/file->vec-of-str "resources/inputs/2020/07.txt")
+        lines (utils/file->vec-of-str "resources/inputs/2020/07-test-sample.txt")
         all-bags (map parse-line lines)
-        top (filter #(= pattern %) (->> all-bags (map first)))
+        #_#_top (filter #(= pattern %) (->> all-bags (map first)))
         other (get-containers all-bags pattern 0)]
     #_(+ (count top) (count (flatten other)))
     other))
