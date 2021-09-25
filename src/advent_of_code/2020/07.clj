@@ -29,39 +29,6 @@
     [(first parts) (filter some? children)]))
 
 
-#_(parse-line "light red bags contain 2 clear indigo bags, 3 light lime bags.")
-
-
-#_(defn get-containers
-    [xs s]
-    (let [cleared (filter #(seq (second %)) xs)
-          direct (get-parents cleared s)]
-      (prn (str "intro: direct=" direct))
-      (loop [acc (count direct)
-             indirect (mapv #(get-parents cleared %) direct)]
-        (prn (str "loop: indirect=" indirect))
-
-        (doseq [m indirect]
-          (prn-str m))
-
-        (if (empty? indirect)
-          acc
-          (recur (+ acc (count indirect))
-                 (map #(get-parents cleared %) indirect))))))
-
-
-(defn- has-value
-  "Returns a predicate that tests whether a map contains a specific value"
-  [key value]
-  (fn [m]
-    (= value (m key))))
-
-
-(defn- get-parents
-  [xs s]
-  (mapv first (filter #(contains? (set (second %)) s) xs)))
-
-
 (defn- fltr
   [item pattern]
   (let [vv (filter (fn [m]
@@ -83,13 +50,11 @@
 
 (defn solve []
   (let [pattern "shiny gold"
-        #_#_lines (utils/file->vec-of-str "resources/inputs/2020/07.txt")
-        lines (utils/file->vec-of-str "resources/inputs/2020/07-test-sample.txt")
+        lines (utils/file->vec-of-str "resources/inputs/2020/07.txt")
+        #_#_lines (utils/file->vec-of-str "resources/inputs/2020/07-test-sample.txt")
         all-bags (map parse-line lines)
-        #_#_top (filter #(= pattern %) (->> all-bags (map first)))
         other (get-containers all-bags pattern 0)]
-    #_(+ (count top) (count (flatten other)))
-    other))
+    (first (distinct (flatten other)))))
 
 
 (solve)
