@@ -33,8 +33,13 @@
 
 
 (defn solve []
-  (let [data (utils/file->vec-of-str "resources/inputs/2020/02.txt")
+  (let [data (utils/->vec-of-str "resources/inputs/2020/02.txt")
         xs (into [] (map parse-string data))
         result1 (count (filter #(:valid-v1? %) xs))
         result2 (count (filter #(:valid-v2? %) xs))]
     [result1 result2]))
+
+
+(comment
+  (solve)
+  )

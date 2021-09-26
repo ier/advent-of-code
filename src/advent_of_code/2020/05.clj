@@ -51,11 +51,13 @@
 
 
 (defn solve []
-  (let [lines (utils/file->vec-of-str "resources/inputs/2020/05.txt")
+  (let [lines (utils/->vec-of-str "resources/inputs/2020/05.txt")
         decoded (map decode lines)
         maximal (apply max decoded)
         free-seat-id (get-skipped-number decoded)]
     (str "Part 1: " maximal "; Part 2: " free-seat-id)))
 
 
-(solve)
+(comment
+  (solve)
+  )

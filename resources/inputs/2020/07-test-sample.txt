@@ -7,3 +7,4 @@ dark olive bags contain 3 faded blue bags, 4 dotted black bags.
 vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
 faded blue bags contain no other bags.
 dotted black bags contain no other bags.
+dark black bags contain 7 muted yellow bags, 6 shiny white bags.

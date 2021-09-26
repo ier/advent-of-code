@@ -3,7 +3,7 @@
    [clojure.string :as str]))
 
 
-(defn file->vec-of-str [filename]
+(defn ->vec-of-str [filename]
   (->> filename
        slurp
        str/split-lines))

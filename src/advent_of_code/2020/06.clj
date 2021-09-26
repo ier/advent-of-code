@@ -16,7 +16,7 @@
 
 
 (defn solve []
-  (let [init-lines (utils/file->vec-of-str "resources/inputs/2020/06.txt")
+  (let [init-lines (utils/->vec-of-str "resources/inputs/2020/06.txt")
         lines (map #(if (= "" %) % (str " " %)) init-lines)
         updated (map utils/replace-if-empty lines)
         content (reduce str updated)
@@ -36,4 +36,6 @@
     [result1 result2]))
 
 
-(solve)
+(comment
+  (solve)
+  )

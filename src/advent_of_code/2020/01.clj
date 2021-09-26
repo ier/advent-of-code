@@ -10,7 +10,7 @@
 
 
 (defn solve []
-  (let [data (utils/file->vec-of-str "resources/inputs/2020/01.txt")
+  (let [data (utils/->vec-of-str "resources/inputs/2020/01.txt")
         v (into [] (map #(Integer/parseInt %) data))
         result1 (let [xs (for [x1 v
                                x2 v]
