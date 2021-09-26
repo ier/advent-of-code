@@ -1,0 +1,7 @@
+muted lime bags contain 1 wavy lime bag, 1 vibrant green bag, 3 light yellow bags.
+light red bags contain 2 clear indigo bags, 3 light lime bags.
+wavy beige bags contain 4 faded chartreuse bags.
+muted blue bags contain 3 mirrored tan bags.
+vibrant cyan bags contain 4 drab beige bags, 4 vibrant maroon bags, 2 dull coral bags.
+posh indigo bags contain 1 dim cyan bag, 4 striped violet bags, 2 posh olive bags.
+dark black bags contain 5 dotted purple bags, 3 dotted orange bags, 5 shiny gold bags, 3 wavy brown bags.

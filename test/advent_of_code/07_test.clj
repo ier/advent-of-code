@@ -16,4 +16,8 @@
   
   (testing "solve example data"
     (is (= 4
-           (solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")))))
+           (solve "resources/inputs/2020/07-test-sample.txt" "shiny gold"))))
+  
+  (testing "solve example data extra"
+    (is (= 1
+           (solve "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")))))

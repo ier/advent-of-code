@@ -55,7 +55,8 @@
   (let [lines (utils/file->vec-of-str input-file-name)
         all-bags (map parse-line lines)
         other (get-containers all-bags pattern 0)]
-    (first (distinct (flatten other)))))
+    (or (first (distinct (flatten other)))
+        0)))
 
 
 (solve "resources/inputs/2020/07.txt" "shiny gold")
