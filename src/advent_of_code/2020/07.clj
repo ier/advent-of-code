@@ -31,44 +31,32 @@
     [(first parts) (filter some? children)]))
 
 
-(defn- has-bag?
-  [bags item pattern]
-  (let [fltr (fn [item pattern]
-               (let [xs (filter
-                         (fn [m] (= pattern (:title m)))
-                         (second item))]
-                 (when (seq xs)
-                   (first item))))
-        res (or (= pattern (first item))
-                (->> bags
-                     (map #(fltr % pattern))
-                     (filter seq)
-                     seq)
-                #_(...))]
-    res))
+(defn fltr
+  [item pattern]
+  (->> item
+       second
+       (filter #(= pattern (:title %)))
+       seq))
+
+
+(defn- trace
+  ([bags item]
+   (trace bags item (conj '() item)))
+  ([bags item acc]
+   (let [found (filter #(fltr % item) bags)]
+     (if (seq found)
+       (recur bags (ffirst found) (conj acc (ffirst found)))
+       acc))))
 
 
 (defn- get-containers
   [bags pattern]
-  (loop [items bags
-         cnt 0
-         acc 0]
-    (if (seq items)
-      (if (has-bag? bags (first items) pattern)
-        (recur (rest items) (inc cnt) (inc acc))
-        (recur (rest items) (inc cnt) acc))
-      acc)))
-
-
-#_(let [fltr (fn [item pattern]
-               (let [vv (filter #(= pattern (:title %)) (second item))]
-                 (when (seq vv) (first item))))
-        direct (->> bags
-                    (map #(fltr % pattern))
-                    (filter seq))]
-    (if (seq direct)
-      (mapv #(get-containers bags % (+ acc (count direct))) direct)
-      acc))
+  (let [top (filter #(= pattern (first %)) bags)
+        direct (filter #(fltr % pattern) bags)
+        indirect (map #(trace bags (first %)) direct)]
+    (+ (count top)
+       (count direct)
+       (reduce + (map count indirect)))))
 
 
 (defn solve
@@ -76,13 +64,10 @@
   (or (-> (->> input-file-name
                utils/->vec-of-str
                (map parse-line))
-          (get-containers pattern)
-          #_flatten
-          #_distinct
-          #_count)
+          (get-containers pattern))
       0))
 
 
 (comment
-  (solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")
+  (solve "resources/inputs/2020/07.txt" "shiny gold")
   )
