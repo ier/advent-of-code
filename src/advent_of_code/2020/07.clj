@@ -46,30 +46,27 @@
 
 
 (defn- trace
-  ([bags item]
-   (trace bags item (conj '() item)))
-  ([bags item acc]
-   (prn "trace2:" item)
-   (let [found (filter #(fltr % item) bags)
-         ffound (ffirst found)]
-     (if (seq found)
-       (recur bags ffound (conj acc ffound))
-       acc))))
+  [bags item acc]
+  (let [found (filter #(fltr % item) bags)]
+    (if (seq found)
+      (mapv #(trace bags (first %) (conj acc (first %))) found)
+      (count acc))))
 
 
 (defn- get-containers
   [bags pattern]
-  (let [top (->> bags
-                 (filter #(= pattern (first %))))
-        direct (->> bags
-                    (filter #(fltr % pattern)))
-        indirect (mapv #(trace bags (first %)) direct)]
+  (let [top (->> bags (filter #(= pattern (first %))))
+        direct (->> bags (filter #(fltr % pattern)))
+        indirect (mapv
+                  #(trace
+                    bags
+                    (first %)
+                    (conj '() (first %)))
+                  direct)]
+    top
     #_(+ (count top)
        (count direct)
-       (reduce + (map count indirect)))
-    (concat (map first top)
-            (map first direct)
-            indirect)))
+       (reduce + (flatten indirect)))))
 
 
 (defn solve
