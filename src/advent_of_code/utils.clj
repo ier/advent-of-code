@@ -8,6 +8,9 @@
        slurp
        str/split-lines))
 
+(defn ->indexed-vec [v]
+  (map-indexed (fn [idx itm] (str itm ":" (inc idx))) v))
+
 
 (defn replace-if-empty [s]
   (if (= s "") "_" s))

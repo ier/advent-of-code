@@ -4,6 +4,9 @@
    [advent-of-code.utils :as utils]))
 
 
+(def ^:dynamic *debug?* false)
+
+
 (defn- ->hashmap [s]
   (let [[_ amount title] (re-find #"(\d+) (.+$)" s)]
     (when (some? amount)
@@ -23,12 +26,15 @@
 
 
 (defn- parse-line [s]
-  (let [parts (str/split s #" bags contain ")
-        empty-children? (= "no other bags." (:second parts))
+  (let [[_ left right idx] (re-find #"(.+) bags contain (.+):(\d+)" s)
+        empty-children? (= "no other bags." right)
         children (if empty-children?
                    nil
-                   (parse-bag (second parts)))]
-    [(first parts) (filter some? children)]))
+                   (parse-bag right))
+        result [left (filter some? children)]]
+    (if *debug?*
+      result
+      (conj result idx))))
 
 
 (defn fltr
@@ -43,31 +49,37 @@
   ([bags item]
    (trace bags item (conj '() item)))
   ([bags item acc]
-   (let [found (filter #(fltr % item) bags)]
+   (prn "trace2:" item)
+   (let [found (filter #(fltr % item) bags)
+         ffound (ffirst found)]
      (if (seq found)
-       (recur bags (ffirst found) (conj acc (ffirst found)))
+       (recur bags ffound (conj acc ffound))
        acc))))
 
 
 (defn- get-containers
   [bags pattern]
-  (let [top (filter #(= pattern (first %)) bags)
-        direct (filter #(fltr % pattern) bags)
-        indirect (map #(trace bags (first %)) direct)]
-    (+ (count top)
+  (let [top (->> bags
+                 (filter #(= pattern (first %))))
+        direct (->> bags
+                    (filter #(fltr % pattern)))
+        indirect (mapv #(trace bags (first %)) direct)]
+    #_(+ (count top)
        (count direct)
-       (reduce + (map count indirect)))))
+       (reduce + (map count indirect)))
+    (concat (map first top)
+            (map first direct)
+            indirect)))
 
 
 (defn solve
   [input-file-name pattern]
   (or (-> (->> input-file-name
                utils/->vec-of-str
+               utils/->indexed-vec
                (map parse-line))
           (get-containers pattern))
       0))
 
 
-(comment
-  (solve "resources/inputs/2020/07.txt" "shiny gold")
-  )
+(solve "resources/inputs/2020/07.txt" "shiny gold")
