@@ -67,9 +67,9 @@
                     (filter #(fltr % pattern))
                     (map first))
         indirect (find-bags bags direct)]
-    (count (concat top
-                   direct
-                   indirect))))
+    (count (distinct (concat top
+                             direct
+                             indirect)))))
 
 
 (defn solve
@@ -82,4 +82,4 @@
       0))
 
 
-(solve "resources/inputs/2020/07.txt" "shiny gold")
+(solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")
