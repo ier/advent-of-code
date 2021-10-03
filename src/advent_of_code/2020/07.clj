@@ -46,40 +46,26 @@
 
 
 (defn- find-bags
-  [bags patterns]
-  (map
-   (fn [pattern]
-     (let [found (->> bags
-                      (filter #(fltr % pattern))
-                      (map first))]
-       (if (seq found)
-         (find-bags bags found)
-         pattern)))
-   patterns))
-
-
-(defn- get-containers
   [bags pattern]
-  (let [top (->> bags
-                 (filter #(= pattern (first %)))
-                 (map first))
-        direct (->> bags
-                    (filter #(fltr % pattern))
-                    (map first))
-        indirect (find-bags bags direct)]
-    (count (distinct (concat top
-                             direct
-                             indirect)))))
+  (let [found (->> bags
+                   (filter #(fltr % pattern))
+                   (map first))]
+    (if (seq found)
+      (map #(find-bags bags %) found)
+      pattern)))
 
 
-(defn solve
-  [input-file-name pattern]
-  (or (-> (->> input-file-name
-               utils/->vec-of-str
-               utils/->indexed-vec
-               (map parse-line))
-          (get-containers pattern))
-      0))
+  (defn solve
+    [input-file-name pattern]
+    (let [bags (->> input-file-name
+                    utils/->vec-of-str
+                    utils/->indexed-vec
+                    (map parse-line))
+          top (->> bags
+                   (filter #(= pattern (first %)))
+                   (map #(str (first %) ":" (last %))))
+          other (find-bags bags pattern)]
+      (concat top other)))
 
 
-(solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")
+(solve "resources/inputs/2020/07.txt" "shiny gold")
