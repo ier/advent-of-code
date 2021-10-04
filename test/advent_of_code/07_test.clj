@@ -10,10 +10,9 @@
             '({:amount "2"
                :title "clear indigo"} 
               {:amount "3"
-               :title "light lime"})
-            "12"]
+               :title "light lime"})]
            (#'advent-of-code.2020.07/parse-line
-            "light red bags contain 2 clear indigo bags, 3 light lime bags.:12"))))
+            "light red bags contain 2 clear indigo bags, 3 light lime bags."))))
   
   (testing "solve example data"
     (is (= 4

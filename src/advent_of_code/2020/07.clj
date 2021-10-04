@@ -4,9 +4,6 @@
    [advent-of-code.utils :as utils]))
 
 
-(def ^:dynamic *debug?* false)
-
-
 (defn- ->hashmap [s]
   (let [[_ amount title] (re-find #"(\d+) (.+$)" s)]
     (when (some? amount)
@@ -26,15 +23,11 @@
 
 
 (defn- parse-line [s]
-  (let [[_ left right idx] (re-find #"(.+) bags contain (.+):(\d+)" s)
-        empty-children? (= "no other bags." right)
-        children (if empty-children?
+  (let [[_ left right] (re-find #"(.+) bags contain (.+)" s)
+        children (if (= "no other bags." right)
                    nil
-                   (parse-bag right))
-        result [left (filter some? children)]]
-    (if *debug?*
-      result
-      (conj result idx))))
+                   (parse-bag right))]
+    [left (filter some? children)]))
 
 
 (defn fltr
@@ -55,17 +48,17 @@
       pattern)))
 
 
-  (defn solve
-    [input-file-name pattern]
-    (let [bags (->> input-file-name
-                    utils/->vec-of-str
-                    utils/->indexed-vec
-                    (map parse-line))
-          top (->> bags
-                   (filter #(= pattern (first %)))
-                   (map #(str (first %) ":" (last %))))
-          other (find-bags bags pattern)]
-      (concat top other)))
+(defn solve
+  [input-file-name pattern]
+  (let [bags (->> input-file-name
+                  utils/->vec-of-str
+                  (map parse-line))
+        top (->> bags
+                 (filter #(= pattern (first %)))
+                 (map first))
+        direct (find-bags bags pattern)
+        indirect (map #(find-bags bags %) direct)]
+    (concat top direct indirect)))
 
 
-(solve "resources/inputs/2020/07.txt" "shiny gold")
+(solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")
