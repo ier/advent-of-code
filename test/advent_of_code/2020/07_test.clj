@@ -1,4 +1,4 @@
-(ns advent-of-code.07-test
+(ns advent-of-code.2020.07-test
   (:require
    [clojure.test :refer [deftest testing is]]
    [advent-of-code.2020.07 :refer [solve]]))
