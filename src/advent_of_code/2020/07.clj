@@ -38,11 +38,16 @@
        seq))
 
 
+(defn- find
+  [bags pattern]
+  (->> bags
+       (filter #(fltr % pattern))
+       (map first)))
+
+
 (defn- find-bags
   [bags pattern]
-  (let [found (->> bags
-                   (filter #(fltr % pattern))
-                   (map first))]
+  (let [found (find bags pattern)]
     (if (seq found)
       (map #(find-bags bags %) found)
       pattern)))
@@ -53,12 +58,10 @@
   (let [bags (->> input-file-name
                   utils/->vec-of-str
                   (map parse-line))
-        top (->> bags
-                 (filter #(= pattern (first %)))
-                 (map first))
-        direct (find-bags bags pattern)
-        indirect (map #(find-bags bags %) direct)]
-    (concat top direct indirect)))
+        total (->> (find bags pattern)
+                   (map #(find-bags bags %))
+                   flatten)]
+    (count total)))
 
 
 (solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")
