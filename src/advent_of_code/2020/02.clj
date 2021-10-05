@@ -1,7 +1,7 @@
 (ns advent-of-code.2020.02
   (:require
-   [clojure.string :as str]
-   [advent-of-code.utils :as utils]))
+   [clojure.string :refer [split]]
+   [advent-of-code.utils :refer [->vec-of-str]]))
 
 
 (defn- count-substring [txt sub]
@@ -9,10 +9,10 @@
 
 
 (defn- parse-string [s]
-  (let [parts (str/split s #"\ ")
-        interval (str/split (first parts) #"-")
-        min (Integer/parseInt (first interval))
-        max (Integer/parseInt (second interval))
+  (let [parts (split s #"\ ")
+        interval (split (first parts) #"-")
+        min (read-string (first interval))
+        max (read-string (second interval))
         char (subs (second parts) 0 1)
         pwd (last parts)
         matches (count-substring pwd char)
@@ -32,8 +32,8 @@
            :valid-v2? valid-v2?)))
 
 
-(defn solve []
-  (let [data (utils/->vec-of-str "resources/inputs/2020/02.txt")
+(defn solve [file-name]
+  (let [data (->vec-of-str file-name)
         xs (into [] (map parse-string data))
         result1 (count (filter #(:valid-v1? %) xs))
         result2 (count (filter #(:valid-v2? %) xs))]
@@ -41,5 +41,5 @@
 
 
 (comment
-  (solve)
+  (solve "resources/inputs/2020/02.txt")
   )

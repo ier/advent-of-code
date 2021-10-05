@@ -1,6 +1,6 @@
 (ns advent-of-code.2020.05
   (:require
-   [advent-of-code.utils :as utils]))
+   [advent-of-code.utils :refer [->vec-of-str]]))
 
 
 (defn- update-interval
@@ -50,8 +50,8 @@
           (recur (inc expected) (rest items)))))))
 
 
-(defn solve []
-  (let [lines (utils/->vec-of-str "resources/inputs/2020/05.txt")
+(defn solve [file-name]
+  (let [lines (->vec-of-str file-name)
         decoded (map decode lines)
         maximal (apply max decoded)
         free-seat-id (get-skipped-number decoded)]
@@ -59,5 +59,5 @@
 
 
 (comment
-  (solve)
+  (solve "resources/inputs/2020/05.txt")
   )

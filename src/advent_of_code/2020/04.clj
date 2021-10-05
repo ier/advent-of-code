@@ -1,20 +1,23 @@
 (ns advent-of-code.2020.04
   (:require
-   [clojure.string :as str]
-   [advent-of-code.utils :as utils]))
+   [clojure.string :refer [split blank?]]
+   [advent-of-code.utils :refer [->vec-of-str
+                                 replace-if-empty]]))
 
 
 (defn- sanitize [s]
-  (let [s' (str/split s #":")
+  (let [s' (split s #":")
         k (keyword (first s'))
         v (str (second s'))]
     (list k v)))
 
 
 (defn- ->map [s]
-  (let [pairs (str/split s #" ")
-        pairs* (map sanitize pairs)]
-    (reduce (fn [m p] (assoc m (first p) (second p))) {} pairs*)))
+  (let [pairs (split s #" ")
+        pairs* (map sanitize pairs)
+        fnx (fn [m p]
+              (assoc m (first p) (second p)))]
+    (reduce fnx {} pairs*)))
 
 
 (defn- has-keys? [m]
@@ -39,13 +42,13 @@
 
 
 (defn- valid-hgt? [s]
-  (if (str/blank? s)
+  (if (blank? s)
     false
     (if (re-matches #"^\d+$" s)
       false
       (let [len (count s)
             shift (- len 2)
-            value (Integer/parseInt (subs s 0 shift))
+            value (read-string (subs s 0 shift))
             units (subs s shift (+ shift 2))]
         (or
          (and (= units "cm") (>= value 150) (<= value 193))
@@ -53,13 +56,13 @@
 
 
 (defn- valid-hcl? [s]
-  (if (str/blank? s)
+  (if (blank? s)
     false
     (some? (re-matches #"^#[0-9a-fA-F]{6}$" s))))
 
 
 (defn- valid-ecl? [s]
-  (if (str/blank? s)
+  (if (blank? s)
     false
     (and
      (contains? #{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"} s)
@@ -67,15 +70,15 @@
 
 
 (defn- valid-pid? [s]
-  (if (str/blank? s)
+  (if (blank? s)
     false
     (some? (re-matches #"^\d{9}$" s))))
 
 
 (defn- valid-id? [m]
-  (let [byr (if (some? (:byr m)) (Integer/parseInt (:byr m)) 0)
-        iyr (if (some? (:iyr m)) (Integer/parseInt (:iyr m)) 0)
-        eyr (if (some? (:eyr m)) (Integer/parseInt (:eyr m)) 0)
+  (let [byr (if (some? (:byr m)) (read-string (:byr m)) 0)
+        iyr (if (some? (:iyr m)) (read-string (:iyr m)) 0)
+        eyr (if (some? (:eyr m)) (read-string (:eyr m)) 0)
         hgt (:hgt m)
         hcl (:hcl m)
         ecl (:ecl m)
@@ -90,19 +93,19 @@
      (valid-pid? pid))))
 
 
-(defn parse-credentials []
-  (let [init-lines (utils/->vec-of-str "resources/inputs/2020/04.txt")
+(defn parse-credentials [file-name]
+  (let [init-lines (->vec-of-str file-name)
         lines (map #(if (= "" %) % (str " " %)) init-lines)
-        updated (map utils/replace-if-empty lines)
+        updated (map replace-if-empty lines)
         content (reduce str updated)
-        splitted* (str/split content #"_")
+        splitted* (split content #"_")
         splitted (map #(subs % 1 (count %)) splitted*)
         hashmaps (map ->map splitted)]
     hashmaps))
 
 
-(defn solve []
-  (let [credentials (parse-credentials)
+(defn solve [file-name]
+  (let [credentials (parse-credentials file-name)
         filtered1 (filter has-keys? credentials)
         result1 (count filtered1)
         filtered2 (filter valid-id? credentials)
@@ -111,5 +114,5 @@
 
 
 (comment
-  (solve)
+  (solve "resources/inputs/2020/04.txt")
   )

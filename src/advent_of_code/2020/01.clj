@@ -1,6 +1,6 @@
 (ns advent-of-code.2020.01
   (:require
-   [advent-of-code.utils :as utils]))
+   [advent-of-code.utils :refer [->vec-of-str]]))
 
 
 (defn distinct-by
@@ -9,8 +9,8 @@
     (map #(first (groups %)) (distinct (map f coll)))))
 
 
-(defn solve []
-  (let [data (utils/->vec-of-str "resources/inputs/2020/01.txt")
+(defn solve [file-name]
+  (let [data (->vec-of-str file-name)
         v (into [] (map #(Integer/parseInt %) data))
         result1 (let [xs (for [x1 v
                                x2 v]
@@ -27,5 +27,5 @@
 
 
 (comment
-  (solve)
+  (solve "resources/inputs/2020/01.txt")
   )
