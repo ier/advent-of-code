@@ -1,6 +1,6 @@
 (ns advent-of-code.2020.07
   (:require
-   [clojure.string :refer [replace split]]
+   [clojure.string :as str]
    [advent-of-code.utils :refer [->vec-of-str]]))
 
 
@@ -12,14 +12,14 @@
 
 (defn- fix [xs]
   (map #(-> %
-            (replace " bags." "")
-            (replace " bags" "")
-            (replace " bag." "")
-            (replace " bag" "")) xs))
+            (str/replace " bags." "")
+            (str/replace " bags" "")
+            (str/replace " bag." "")
+            (str/replace " bag" "")) xs))
 
 
 (defn- parse-bag [s]
-  (map ->hashmap (-> s (split #", ") fix)))
+  (map ->hashmap (-> s (str/split #", ") fix)))
 
 
 (defn- parse-line [s]
@@ -38,7 +38,7 @@
        seq))
 
 
-(defn- find
+(defn- find-bag
   [bags pattern]
   (->> bags
        (filter #(fltr % pattern))
@@ -47,7 +47,7 @@
 
 (defn- find-bags
   [bags pattern]
-  (let [found (find bags pattern)]
+  (let [found (find-bag bags pattern)]
     (if (seq found)
       (map #(find-bags bags %) found)
       pattern)))
@@ -58,7 +58,7 @@
   (let [bags (->> input-file-name
                   ->vec-of-str
                   (map parse-line))
-        total (->> (find bags pattern)
+        total (->> (find-bag bags pattern)
                    (map #(find-bags bags %))
                    flatten)]
     (count total)))
