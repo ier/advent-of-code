@@ -3,7 +3,7 @@
    [clojure.string :refer [split trim]]))
 
 
-(defn replace-at
+(defn- replace-at
   [xs pos value]
   (let [parts (split-at pos xs)
         head (butlast (first parts))]
@@ -27,7 +27,7 @@
     (replace-at codes (inc pos) value)))
 
 
-(defn- run [xs]
+(defn run [xs]
   (loop [codes xs idx 0]
     (let [code (->> codes
                     (drop idx)
@@ -46,12 +46,46 @@
       (replace-at 3 verb)))
 
 
+(defn parse [file-name]
+  (-> file-name
+      slurp
+      trim
+      (split #",")))
+
+
 (defn solve-1 [file-name]
-  (run (-> file-name
-           slurp
-           trim
-           (split #",")
-           (init "12" "2"))))
+  (-> file-name
+      parse
+      (init "12" "2")
+      run))
 
 
-(solve-1 "resources/inputs/2019/02.txt")
+(comment
+  (solve-1 "resources/inputs/2019/02.txt")
+  )
+
+
+(defn- find-match
+  [data target]
+  (let [size (count data)]
+    (->> (for [noun (range size)
+               verb (range size)]
+           (let [found (-> data
+                           (init noun verb)
+                           run
+                           (= target))]
+             (when found
+               (prn "Match found for " noun " and " verb "."))))
+         (slurp "result.txt"))))
+
+
+(defn solve-2 [file-name]
+  (let [target 19690720]
+    (-> file-name
+        parse
+        (find-match target))))
+
+
+(comment
+  (solve-2 "resources/inputs/2019/02.txt")
+  )
