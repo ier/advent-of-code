@@ -14,3 +14,7 @@
 
 (defn replace-if-empty [s]
   (if (= s "") "_" s))
+
+
+(defn abs [n]
+  (max n (- n)))
