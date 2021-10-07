@@ -50,8 +50,8 @@
     @result))
 
 
-(defn closest-intersection-distance [lines]
-  (->> lines
+(defn closest-intersection-distance [xs]
+  (->> xs
        (map trace-line)
        intersections
        (map manhattan-distance)
