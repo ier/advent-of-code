@@ -1,13 +1,7 @@
 (ns advent-of-code.2019.03
   (:require
-   [clojure.java.io :as io]
    [clojure.string :refer [split]]
-   [advent-of-code.utils :refer [abs]]))
-
-
-(defn- read-by-line [filename]
-  (with-open [rdr (io/reader filename)]
-    (reduce conj [] (line-seq rdr))))
+   [advent-of-code.utils :refer [abs read-by-line]]))
 
 
 (defn- trace-line [s]
@@ -29,9 +23,12 @@
 
 
 (defn- manhattan-distance
-  [[x y]]
-  (+ (abs (- 0 x))
-     (abs (- 0 y))))
+  ([p]
+   (manhattan-distance [0 0] p))
+  ([[a b] [x y]]
+   (when (and x y)
+     (+ (abs (- a x))
+        (abs (- b y))))))
 
 
 (defn- intersections [xs]
@@ -40,11 +37,9 @@
                    (= y1 y2)))
         a (first xs)
         b (second xs)
-        result (atom '())
-        size-a (count a)
-        size-b (count b)]
-    (for [la (range size-a)
-          lb (range size-b)]
+        result (atom '())]
+    (for [la (range (count a))
+          lb (range (count b))]
       (when (fnx (nth a la) (nth b lb))
         (swap! result conj (nth a la))))
     @result))
