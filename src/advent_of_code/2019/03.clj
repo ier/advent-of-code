@@ -6,7 +6,7 @@
 
 (defn- trace-line [s]
   (let [xs (split s #",")]
-    (loop [moves xs x 0 y 0]
+    (loop [moves xs x 0 y 0 acc []]
       (let [value (first moves)
             [_ direction steps] (re-find #"(.)(\d+)" value)
             shift (read-string steps)
@@ -18,15 +18,15 @@
             x' (+' x dx)
             y' (+' y dy)]
         (if (empty? (rest moves))
-          [x' y']
-          (recur (rest moves) x' y'))))))
+          (conj acc [x' y'])
+          (recur (rest moves) x' y' (conj acc [x' y'])))))))
 
 
 (defn- manhattan-distance
   ([p]
    (manhattan-distance [0 0] p))
   ([[a b] [x y]]
-   (when (and x y)
+   (when (and a b x y)
      (+ (abs (- a x))
         (abs (- b y))))))
 
@@ -38,10 +38,10 @@
         a (first xs)
         b (second xs)
         result (atom '())]
-    (for [la (range (count a))
-          lb (range (count b))]
-      (when (fnx (nth a la) (nth b lb))
-        (swap! result conj (nth a la))))
+    (into [] (for [la (range (count a))
+                   lb (range (count b))]
+               (when (fnx (nth a la) (nth b lb))
+                 (swap! result conj (nth a la)))))
     @result))
 
 
