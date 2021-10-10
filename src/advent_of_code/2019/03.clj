@@ -30,16 +30,31 @@
         (abs (- b y))))))
 
 
+(defn- cross-point
+  [[ax ay] [bx by] [cx cy] [dx dy]]
+  (cond
+    (or (and (< ax cx bx) (> cy ay dy))
+        (and (> ax cx bx) (< cy ay dy))
+        (and (> ax cx bx) (> cy ay dy))) [cx ay]
+    (or (and (< ay cy by) (> cx ax dx))
+        (and (> ay cy by) (< cx ax dx))
+        (and (> ay cy by) (> cx ax dx))) [ax cy]))
+
+
 (defn- intersections [xs]
-  (let [fnx (fn [[x1 y1] [x2 y2]]
-              (or (= x1 x2)
-                  (= y1 y2)))
-        a (first xs)
+  (let [a (first xs)
         b (second xs)
-        result (into [] (for [la (range (count a))
-                              lb (range (count b))]
-                          (when (fnx (nth a la) (nth b lb))
-                            [(nth a la) (nth b lb)])))]
+        result (into
+                []
+                (for [la (range (dec (count a)))
+                      lb (range (dec (count b)))]
+                  (let [point (cross-point
+                               (nth a la)
+                               (nth a (inc la))
+                               (nth b lb)
+                               (nth b (inc lb)))]
+                    (when (some? point)
+                      point))))]
     (filter some? result)))
 
 
@@ -47,8 +62,8 @@
   (->> xs
        (map trace-line)
        intersections
-       #_(map manhattan-distance)
-       #_(apply min)))
+       (map manhattan-distance)
+       (apply min)))
 
 
 (defn solve-1 [filename]
