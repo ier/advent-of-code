@@ -46,15 +46,8 @@
     
     (or (and (= ax bx cx) (< ay cy by))
         (and (= ax bx cx) (> ay cy by))) [cx cy]
-        #_#_#_#_#_#_
-        (and (= ax bx dx))
-        (and (= bx ax dx))
-        
-        (and (= cx dx ax))
-        (and (= dx cx ax))
-        
-        (and (= cx dx bx))
-        (and (= dx cx bx))))
+    (or (and (= ax bx dx) (< ay dy by))
+        (and (= ax bx dx) (> ay dy by))) [dx dy]))
 
 
 (defn- intersections [xs]
