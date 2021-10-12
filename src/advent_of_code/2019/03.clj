@@ -33,17 +33,14 @@
 (defn- cross-point
   [[ax ay] [bx by] [cx cy] [dx dy]]
   (cond
-    (or (and (< ax cx bx) (> cy ay dy))
+    (or (and (< ax cx bx) (< cy ay dy))
+        (and (< ax cx bx) (> cy ay dy))
         (and (> ax cx bx) (< cy ay dy))
         (and (> ax cx bx) (> cy ay dy))) [cx ay]
-    (or (and (< ay cy by) (> cx ax dx))
-        (and (> ay cy by) (< cx ax dx))
-        (and (> ay cy by) (> cx ax dx))) [ax cy]
     (and (= ax cx) (= ay cy)
          (= bx cx) (= by cy)) [cx cy]
     (and (= ax dx) (= ay dy)
          (= bx dx) (= by dy)) [dx dy]
-    
     (or (and (= ax bx cx) (< ay cy by))
         (and (= ax bx cx) (> ay cy by))) [cx cy]
     (or (and (= ax bx dx) (< ay dy by))
