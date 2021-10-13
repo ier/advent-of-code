@@ -37,6 +37,10 @@
         (and (< ax cx bx) (> cy ay dy))
         (and (> ax cx bx) (< cy ay dy))
         (and (> ax cx bx) (> cy ay dy))) [cx ay]
+    (or (and (< cx ax dx) (< by cy ay))
+        (and (< cx ax dx) (> by cy ay))
+        (and (> cx ax dx) (< by cy ay))
+        (and (> cx ax dx) (> by cy ay))) [ax cy]
     (and (= ax cx) (= ay cy)
          (= bx cx) (= by cy)) [cx cy]
     (and (= ax dx) (= ay dy)
