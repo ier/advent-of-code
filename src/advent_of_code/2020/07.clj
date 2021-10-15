@@ -38,30 +38,31 @@
        seq))
 
 
-(defn- find-bag
-  [bags pattern]
-  (->> bags
-       (filter #(fltr % pattern))
-       (map first)))
+(defn- srch
+  ([bags pattern]
+   (srch bags pattern []))
+  ([bags pattern acc]
+   (let [found (map first (filter #(fltr % pattern) bags))]
+     (map (fn [ptrn]
+            (let [parents (map #(srch bags ptrn found) found)]
+              (if (seq parents)
+                parents
+                acc)))
+          found))))
 
-
-(defn- find-bags
-  [bags pattern]
-  (let [found (find-bag bags pattern)]
-    (if (seq found)
-      (map #(find-bags bags %) found)
-      pattern)))
-
+(conj [] (flatten '("1" "2")))
 
 (defn solve
   [input-file-name pattern]
   (let [bags (->> input-file-name
                   ->vec-of-str
                   (map parse-line))
-        total (->> (find-bag bags pattern)
-                   (map #(find-bags bags %))
-                   flatten)]
-    (count total)))
+        direct (->> bags
+                    (filter #(= (first %) pattern))
+                    (map first))
+        indirect (srch bags pattern)]
+    (concat direct indirect)))
 
 
-(solve "resources/inputs/2020/07-test-sample.txt" "shiny gold")
+;; https://github.com/callum-oakley/advent-of-code-2020/blob/master/src/day_07.clj
+(solve "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
