@@ -44,13 +44,13 @@
   ([bags pattern acc]
    (let [found (map first (filter #(fltr % pattern) bags))]
      (map (fn [ptrn]
-            (let [parents (map #(srch bags ptrn found) found)]
+            (let [parents (map #(srch bags ptrn %))]
               (if (seq parents)
                 parents
                 acc)))
           found))))
 
-(conj [] (flatten '("1" "2")))
+
 
 (defn solve
   [input-file-name pattern]
