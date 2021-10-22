@@ -30,37 +30,13 @@
     [left (filter some? children)]))
 
 
-(defn fltr
-  [item pattern]
-  (->> item
-       second
-       (filter #(= pattern (:title %)))
-       seq))
-
-
-(defn- srch
-  ([bags pattern]
-   (srch bags pattern []))
-  ([bags pattern acc]
-   (let [found (map first (filter #(fltr % pattern) bags))]
-     (map (fn [ptrn]
-            (let [parents (map #(srch bags ptrn %))]
-              (if (seq parents)
-                parents
-                acc)))
-          found))))
-
-
-
 (defn solve
   [input-file-name pattern]
   (let [bags (->> input-file-name
                   ->vec-of-str
                   (map parse-line))
-        direct (->> bags
-                    (filter #(= (first %) pattern))
-                    (map first))
-        indirect (srch bags pattern)]
+        direct _
+        indirect _]
     (concat direct indirect)))
 
 
