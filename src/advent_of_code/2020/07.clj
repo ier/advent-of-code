@@ -7,7 +7,7 @@
 (defn- ->hashmap [s]
   (let [[_ amount title] (re-find #"(\d+) (.+$)" s)]
     (when (some? amount)
-      {:amount amount :title title})))
+      (hash-map title amount))))
 
 
 (defn- fix [xs]
@@ -30,14 +30,22 @@
     [left (filter some? children)]))
 
 
+(defn- indirect
+  ([rules pattern]
+   (indirect rules pattern 0))
+  ([rules pattern acc]
+   (let [right-matches nil #_(filter #(= pattern ) rules)]
+     right-matches)))
+
+
 (defn solve
   [input-file-name pattern]
-  (let [bags (->> input-file-name
-                  ->vec-of-str
-                  (map parse-line))
-        direct _
-        indirect _]
-    (concat direct indirect)))
+  (let [rules (->> input-file-name
+                   ->vec-of-str
+                   (map parse-line))
+        direct (filter #(= pattern (first %)) rules)
+        indirect (indirect rules pattern)]
+    (count (concat direct indirect))))
 
 
 ;; https://github.com/callum-oakley/advent-of-code-2020/blob/master/src/day_07.clj
