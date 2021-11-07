@@ -6,7 +6,8 @@
 
 (deftest parse-line-test
   (testing "parse-line"
-    (is (= ["light red" '({"clear indigo" "2"} {"light lime" "3"})]
+    (is (= ["light red" '({:title "clear indigo" :amount "2"}
+                          {:title "light lime" :amount "3"})]
            (#'advent-of-code.2020.07/parse-line
             "light red bags contain 2 clear indigo bags, 3 light lime bags."))))
 

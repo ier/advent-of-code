@@ -7,7 +7,7 @@
 (defn- ->hashmap [s]
   (let [[_ amount title] (re-find #"(\d+) (.+$)" s)]
     (when (some? amount)
-      (hash-map title amount))))
+      {:title title :amount amount})))
 
 
 (defn- fix [xs]
@@ -30,23 +30,36 @@
     [left (filter some? children)]))
 
 
-(defn- indirect
+(defn- fnx
+  [rule pattern]
+  (when
+   (some
+    (fn [{:keys [title]}]
+      (= pattern title))
+    (second rule))
+    (first rule)))
+
+
+(defn- search*
   ([rules pattern]
-   (indirect rules pattern 0))
+   (search* rules pattern #{}))
   ([rules pattern acc]
-   (let [right-matches nil #_(filter #(= pattern ) rules)]
-     right-matches)))
+   (let [found (keep not-empty (map #(fnx % pattern) rules))
+         acc' (reduce conj acc found)]
+     (if (seq found)
+       (map #(search* rules % acc') found)
+       acc'))))
 
 
 (defn solve
   [input-file-name pattern]
   (let [rules (->> input-file-name
                    ->vec-of-str
-                   (map parse-line))
-        direct (filter #(= pattern (first %)) rules)
-        indirect (indirect rules pattern)]
-    (count (concat direct indirect))))
+                   (map parse-line))]
+    (search* rules pattern)))
 
+
+(solve "resources/inputs/2020/07.txt" "shiny gold")
 
 ;; https://github.com/callum-oakley/advent-of-code-2020/blob/master/src/day_07.clj
 (solve "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
