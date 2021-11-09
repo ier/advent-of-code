@@ -40,6 +40,13 @@
     (first rule)))
 
 
+(defn- filter-rules
+  [rules pattern]
+  (->> rules
+       (map #(get-bag % pattern))
+       (keep not-empty)))
+
+
 (defn- search
   [rules patterns acc]
   (reduce
@@ -47,7 +54,7 @@
    #{}
    (map
     (fn [pattern]
-      (let [items (keep not-empty (map #(get-bag % pattern) rules))]
+      (let [items (filter-rules rules pattern)]
         (if (seq items)
           (search rules items (reduce conj acc items))
           acc)))
