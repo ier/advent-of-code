@@ -50,7 +50,7 @@
   [rules patterns acc]
   (reduce
    conj
-   #{}
+   '()
    (map
     (fn [pattern]
       (let [items (filter-rules rules pattern)]
@@ -65,10 +65,10 @@
   (let [rules (->> input-file-name
                    ->vec-of-str
                    (map parse-line))]
-    (search rules (list pattern) #{})))
+    (-> (search rules (list pattern) '())
+        flatten
+        distinct
+        count)))
 
 
 (solve "resources/inputs/2020/07.txt" "shiny gold")
-
-;; https://github.com/callum-oakley/advent-of-code-2020/blob/master/src/day_07.clj
-(solve "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
