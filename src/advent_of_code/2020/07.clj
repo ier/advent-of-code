@@ -30,7 +30,7 @@
     [left (filter some? children)]))
 
 
-(defn- fnx
+(defn- get-bag
   [rule pattern]
   (when
    (some
@@ -47,7 +47,7 @@
    #{}
    (map
     (fn [pattern]
-      (let [items (keep not-empty (map #(fnx % pattern) rules))]
+      (let [items (keep not-empty (map #(get-bag % pattern) rules))]
         (if (seq items)
           (search rules items (reduce conj acc items))
           acc)))
