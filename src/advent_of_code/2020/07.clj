@@ -32,11 +32,10 @@
 
 (defn- get-bag
   [rule pattern]
-  (when
-   (some
-    (fn [{:keys [title]}]
-      (= pattern title))
-    (second rule))
+  (when (some
+         (fn [{:keys [title]}]
+           (= pattern title))
+         (second rule))
     (first rule)))
 
 
