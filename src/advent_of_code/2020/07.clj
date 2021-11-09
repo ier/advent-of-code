@@ -40,20 +40,18 @@
     (first rule)))
 
 
-(defn- search*
-  ([rules patterns]
-   (search* rules patterns #{}))
-  ([rules patterns acc]
-   (reduce
-    conj
-    #{}
-    (map
-     (fn [pattern]
-       (let [items (keep not-empty (map #(fnx % pattern) rules))]
-         (if (seq items)
-           (search* rules items (reduce conj acc items))
-           acc)))
-     patterns))))
+(defn- search
+  [rules patterns acc]
+  (reduce
+   conj
+   #{}
+   (map
+    (fn [pattern]
+      (let [items (keep not-empty (map #(fnx % pattern) rules))]
+        (if (seq items)
+          (search rules items (reduce conj acc items))
+          acc)))
+    patterns)))
 
 
 (defn solve
@@ -61,7 +59,7 @@
   (let [rules (->> input-file-name
                    ->vec-of-str
                    (map parse-line))]
-    (search* rules (list pattern))))
+    (search rules (list pattern) #{})))
 
 
 (solve "resources/inputs/2020/07.txt" "shiny gold")
