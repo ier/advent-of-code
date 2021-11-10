@@ -50,7 +50,7 @@
   [rules patterns acc]
   (reduce
    conj
-   '()
+   (list)
    (map
     (fn [pattern]
       (let [items (filter-rules rules pattern)]
@@ -65,7 +65,7 @@
   (let [rules (->> input-file-name
                    ->vec-of-str
                    (map parse-line))]
-    (-> (search rules (list pattern) '())
+    (-> (search rules (list pattern) (list))
         flatten
         distinct
         count)))
