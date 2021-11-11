@@ -83,8 +83,7 @@
 
 
 (comment
-  (solve-1 "resources/inputs/2019/03.txt")
-  )
+  (solve-1 "resources/inputs/2019/03.txt"))
 
 
 (defn- dff
@@ -96,9 +95,6 @@
     (and (= p0y p1y p2y)
          (or (< p1x p0x p2x)
              (> p1x p0x p2x))) (abs (- p1x p0x))))
-
-(dff [158 -12] [158 -30] [158 53])
-(dff [130 53] [135 53] [148 53])
 
 
 (defn length
@@ -112,20 +108,10 @@
         (recur (next (drop cnt turns)) (inc cnt) (+ acc diff))))))
 
 
-(defn sum-up-traces
-  [xs point]
-  (length xs point))
-
-
-#_(let [xs [[0 0] [75 0] [75 -30] [158 -30] [158 53] [146 53] [146 4] [217 4] [217 11] [145 11]]
-      point [158 -12]]
-  (sum-up-traces xs point))
-
-
 (defn fewest-combined-steps [xs]
   (let [traces (map trace-line xs)
         points (intersections traces)
-        path-pairs-to-point (map #(sum-up-traces traces %) points)]
+        path-pairs-to-point (map #(length traces %) points)]
     path-pairs-to-point))
 
 
@@ -136,5 +122,4 @@
 
 
 (comment
-  (solve-2 "resources/inputs/2019/03.txt")
-  )
+  (solve-2 "resources/inputs/2019/03.txt"))
