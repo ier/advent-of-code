@@ -19,13 +19,12 @@
 (defn solve-2 [filename]
   (let [data (->vec-of-str filename)
         sum (sum-up data 3)]
-    (loop [vals data acc 0]
-      (let [pair (take 3 vals)]
-        (if (= (count pair) 3)
-          (let [frst (Integer/parseInt (first pair))
-                scnd (Integer/parseInt (second pair))
-                third (Integer/parseInt (last pair))
-                sum (+ frst scnd third)]
+    (loop [vals sum acc 0]
+      (let [pair (take 2 vals)]
+        (if (= (count pair) 2)
+          (let [frst (first pair)
+                scnd (second pair)
+                increese? (< frst scnd)]
             (recur (rest vals) (if increese? (inc acc) acc)))
           acc)))))
 
