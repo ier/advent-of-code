@@ -1,7 +1,7 @@
 (ns advent-of-code.2021.02-test
-(:require
- [clojure.test :refer [deftest testing is]]
- [advent-of-code.2021.02 :refer [solve-1 solve-2]]))
+  (:require
+   [clojure.test :refer [deftest testing is]]
+   [advent-of-code.2021.02 :refer [solve-1 solve-2]]))
 
 
 (deftest solve-1-test
