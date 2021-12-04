@@ -25,3 +25,12 @@
 
 (defn abs [n]
   (max n (- n)))
+
+
+(defn positions
+  [pred coll]
+  (keep-indexed
+   (fn [idx x]
+     (when (pred x)
+       idx))
+   coll))
