@@ -80,27 +80,40 @@
     (reduce + (map #(Integer/parseInt %) filtered))))
 
 
+(defn- get-board-idx
+  [results]
+  (let [indexed (map-indexed list results)]
+    (ffirst (filter #(= (second %) true) indexed))))
+
+
 (defn- process
   [nums cells]
   (loop [idxs nums items cells]
     (let [val (first idxs)
           cells' (replace-with items val)
-          done? (boolean (some #{true} (seq-complete? cells')))]
+          done? (boolean (some #{true} (seq-complete? cells')))
+          board-idx (get-board-idx (seq-complete? cells'))
+          board (get (->> cells' (partition 25) vec) board-idx)]
       (if done?
-        {:number val
-         :sum (calculate cells')}
+        {:value (Integer/parseInt val)
+         :sum (calculate board)}
         (recur (rest idxs) cells')))))
 
 
 (defn solve-1
   [filename]
   (let [{nums :numbers cells :boards} (->> filename ->vec-of-str parse-data)
-        procesed (process nums cells)]
-    procesed))
+        {value :value sum :sum} (process nums cells)]
+    (* value sum)))
+
+
+(defn solve-2
+  [filename]
+  (let [{nums :numbers cells :boards} (->> filename ->vec-of-str parse-data)]
+    {:nums nums :cells cells}))
 
 
 (comment
-  #_(solve-2 "resources/inputs/2021/04.txt")
-  (solve-1 "resources/inputs/2021/04-sample.txt")
-  ;; -188 * +24 = 4512
+  (solve-2 "resources/inputs/2021/04-sample.txt")
+  (solve-1 "resources/inputs/2021/04.txt")
   )
