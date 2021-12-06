@@ -1,7 +1,7 @@
 (ns advent-of-code.2021.04-test
   (:require
    [clojure.test :refer [deftest testing is]]
-   [advent-of-code.2021.04 :refer [solve-1 #_solve-2]]))
+   [advent-of-code.2021.04 :refer [solve-1 solve-2]]))
 
 
 (deftest solve-1-test
@@ -12,9 +12,9 @@
            (solve-1 "resources/inputs/2021/04.txt")))))
 
 
-#_(deftest solve-2-test
+(deftest solve-2-test
   (testing "solve 03 part 2"
-    (is (= ?
+    (is (= 1924
            (solve-2 "resources/inputs/2021/04-sample.txt")))
-    (is (= ?
+    #_(is (= ?
            (solve-2 "resources/inputs/2021/04.txt")))))

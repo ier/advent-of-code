@@ -34,3 +34,9 @@
      (when (pred x)
        idx))
    coll))
+
+ 
+ (defn vec-remove
+   "remove elem in coll"
+   [pos coll]
+   (into (subvec coll 0 pos) (subvec coll (inc pos))))
