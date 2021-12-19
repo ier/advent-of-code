@@ -97,22 +97,41 @@
              (> p1x p0x p2x))) (abs (- p1x p0x))))
 
 
-(defn length
+(defn len
   [xs point]
-  (loop [turns xs cnt 0 acc 0]
-    (let [p1 (first turns)
-          p2 (second turns)
-          diff (dff point p1 p2)]
-      (if (= cnt (count xs))
-        (+ acc diff)
-        (recur (next (drop cnt turns)) (inc cnt) (+ acc diff))))))
+  (loop [turns xs acc 0]
+    (if (= 1 (count turns))
+      acc
+      (let [p1 (first turns)
+            p2 (second turns)
+            diff (dff point p1 p2)]
+        (recur (next turns) (+ acc diff))))))
 
 
 (defn fewest-combined-steps [xs]
   (let [traces (map trace-line xs)
         points (intersections traces)
-        path-pairs-to-point (map #(length traces %) points)]
-    path-pairs-to-point))
+        #_#_path-pairs-to-point (map #(len traces %) points)]
+    {:traces traces
+     :points points
+     #_#_:result path-pairs-to-point}))
+
+
+(fewest-combined-steps
+ ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
+  "U62,R66,U55,R34,D71,R55,D58,R83"])
+
+
+;; 8+5+5+2 = 20
+;; 7+6+4+3 = 20
+;; 20+20 = 40
+;; ...
+;; 8+5+2 = 15
+;; 7+6+2 = 15
+;; 15+15 = 30
+(fewest-combined-steps
+ ["U7,R6,D4,L4"
+  "R8,U5,L5,D3"])
 
 
 (defn solve-2 [filename]
