@@ -29,7 +29,8 @@
            (->vec-of-str file-name))))
 
 
-(solve-1 "resources/inputs/2019/01.txt")
+(comment
+  (solve-1 "resources/inputs/2019/01.txt")
 
-
-(solve-2 "resources/inputs/2019/01.txt")
+  (solve-2 "resources/inputs/2019/01.txt")
+  )

@@ -71,4 +71,6 @@
         count)))
 
 
-(solve "resources/inputs/2020/07.txt" "shiny gold")
+(comment
+  (solve "resources/inputs/2020/07.txt" "shiny gold")
+  )

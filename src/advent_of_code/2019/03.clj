@@ -174,4 +174,5 @@
 
 
 (comment
-  (solve-2 "resources/inputs/2019/03.txt"))
+  (solve-2 "resources/inputs/2019/03.txt")
+  )

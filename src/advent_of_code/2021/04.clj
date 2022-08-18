@@ -144,21 +144,26 @@
          cells :cells
          board-win-number :board-win-number}
         (process nums cells)
-        
+
+
         cells' (->> cells
                     (partition 25)
                     vec
                     (vec-remove board-win-number)
                     (apply concat)
                     vec)
+#_#_#_#_
         numbers' (skip-numbers (str value) nums)
         res (process numbers' cells')]
-    {:cells cells
+    #_{:cells cells
     :numbers nums
-    :res res}))
+    :res res}
+
+    cells'))
 
 
 (comment
   ;; 1924 = 148 * 13
   (solve-2 "resources/inputs/2021/04-sample.txt")
-  (solve-1 "resources/inputs/2021/04-sample.txt"))
+  (solve-1 "resources/inputs/2021/04-sample.txt")
+  )

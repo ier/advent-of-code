@@ -91,4 +91,5 @@
 
 (comment
   (solve-2 "resources/inputs/2021/03.txt")
-  (solve-1 "resources/inputs/2021/03.txt"))
+  (solve-1 "resources/inputs/2021/03.txt")
+  )

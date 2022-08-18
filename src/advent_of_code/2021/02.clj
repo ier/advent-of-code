@@ -42,4 +42,5 @@
 
 (comment
   (solve-2 "resources/inputs/2021/02.txt")
-  (solve-1 "resources/inputs/2021/02.txt"))
+  (solve-1 "resources/inputs/2021/02.txt")
+  )
