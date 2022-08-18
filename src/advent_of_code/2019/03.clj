@@ -84,7 +84,8 @@
 
 
 (comment
-  (solve-1 "resources/inputs/2019/03.txt"))
+  (solve-1 "resources/inputs/2019/03.txt")
+  )
 
 
 (defn- dff
