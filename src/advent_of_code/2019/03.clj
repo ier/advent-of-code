@@ -99,7 +99,7 @@
              (> p1x p0x p2x))) (abs (- p1x p0x))))
 
 
-(defn len
+(defn- len
   [xs point]
   (loop [turns xs acc 0]
     (if (= 1 (count turns))
@@ -110,7 +110,8 @@
         (recur (next turns) (+ acc diff))))))
 
 
-(defn fewest-combined-steps [xs]
+(defn fewest-combined-steps
+  [xs]
   (let [traces (map trace-line xs)
         points (intersections traces)
         #_#_path-pairs-to-point (map #(len traces %) points)]
@@ -119,30 +120,35 @@
      #_#_:result path-pairs-to-point}))
 
 
-(let [{:keys [traces points result]} (fewest-combined-steps
-                                      ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
-                                       "U62,R66,U55,R34,D71,R55,D58,R83"])
-      lines (vec traces)
-      dots (vec points)]
-  (gpc/raw-plot!
-   [[:set :title "simple-test"]
-    [:plot (gpc/range -100 300)
-     (gpc/list ["-" :title "a" :with :lines]
-               ["-" :title "b" :with :lines]
-               ["-" :title "x" :with :points])]]
-   (conj lines dots)))
+(comment
+  (let [{:keys [traces points result]}
+        (fewest-combined-steps
+         ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
+          "U62,R66,U55,R34,D71,R55,D58,R83"])
+       lines (vec traces)
+       dots (vec points)]
+   (gpc/raw-plot!
+    [[:set :title "simple-test"]
+     [:plot (gpc/range -100 300)
+      (gpc/list ["-" :title "a" :with :lines]
+                ["-" :title "b" :with :lines]
+                ["-" :title "x" :with :points])]]
+    (conj lines dots)))
+  )
 
 
-;; 8+5+5+2 = 20
-;; 7+6+4+3 = 20
-;; 20+20 = 40
-;; ...
-;; 8+5+2 = 15
-;; 7+6+2 = 15
-;; 15+15 = 30
-(fewest-combined-steps
- ["U7,R6,D4,L4"
-  "R8,U5,L5,D3"])
+(comment
+  ;; 8+5+5+2 = 20
+  ;; 7+6+4+3 = 20
+  ;; 20+20 = 40
+  ;; ...
+  ;; 8+5+2 = 15
+  ;; 7+6+2 = 15
+  ;; 15+15 = 30
+  (fewest-combined-steps
+   ["U7,R6,D4,L4"
+    "R8,U5,L5,D3"])
+  )
 
 
 (defn plot
