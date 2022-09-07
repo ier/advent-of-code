@@ -129,7 +129,7 @@
        dots (vec points)]
    (gpc/raw-plot!
     [[:set :title "simple-test"]
-     [:plot (gpc/range -100 300)
+     [:plot (gpc/range -50 300)
       (gpc/list ["-" :title "a" :with :lines]
                 ["-" :title "b" :with :lines]
                 ["-" :title "x" :with :points])]]
