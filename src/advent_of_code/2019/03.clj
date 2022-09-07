@@ -173,6 +173,9 @@
      [4 1]
      [5 0]]]))
 
+(comment
+  (plot)
+  )
 
 (defn solve-2 [filename]
   (->> filename
