@@ -86,7 +86,7 @@
     (ffirst (filter #(= (second %) true) indexed))))
 
 
-(defn- process
+(defn- process-first
   [nums cells]
   (loop [idxs nums items cells]
     (let [val (first idxs)
@@ -102,68 +102,34 @@
         (recur (rest idxs) cells')))))
 
 
-(comment
-  (let [numbers ["10" "16" "13" "6" "15" "25" "12" "22" "18" "20" "8" "19" "3" "26" "1"]
-        cells ["22" "13" "x" "x" "x"
-               "8" "x" "x" "x" "x"
-               "x" "x" "x" "x" "x"
-               "6" "x" "3" "18" "x"
-               "1" "12" "20" "15" "19"
-               
-               "3" "15" "x" "x" "22"
-               "x" "18" "13" "x" "x"
-               "19" "8" "x" "25" "x"
-               "20" "x" "x" "x" "x"
-               "x" "x" "x" "12" "6"]]
-    (process numbers cells))
-  )
-
-
 (defn solve-1
   [filename]
   (let [{nums :numbers cells :boards} (->> filename ->vec-of-str parse-data)
-        {value :value sum :sum} (process nums cells)]
+        {value :value sum :sum} (process-first nums cells)]
     (* value sum)))
 
 
-(defn- skip-numbers
-  [value nums]
-  (let [pos (first (positions #{value} nums))]
-    (vec (drop (inc pos) nums))))
+(defn- process-last
+  [idxs items]
+  (loop [nums idxs cells items]
+    (let [{value :value cls :cells board-win-number :board-win-number sum :sum} (process-first nums cells)]
+      (if (= (count cls) 25)
+        (* value sum)
+        (recur (rest nums) (->> cls
+                                (partition 25)
+                                vec
+                                (vec-remove board-win-number)
+                                (apply concat)
+                                vec))))))
 
 
 (defn solve-2
   [filename]
-  (let [{nums :numbers
-         cells :boards}
-        (->> filename
-             ->vec-of-str
-             parse-data)
-        
-        {value :value
-         cells :cells
-         board-win-number :board-win-number}
-        (process nums cells)
-
-
-        cells' (->> cells
-                    (partition 25)
-                    vec
-                    (vec-remove board-win-number)
-                    (apply concat)
-                    vec)
-#_#_#_#_
-        numbers' (skip-numbers (str value) nums)
-        res (process numbers' cells')]
-    #_{:cells cells
-    :numbers nums
-    :res res}
-
-    cells'))
+  (let [{nums :numbers cells :boards} (->> filename ->vec-of-str parse-data)]
+    (process-last nums cells)))
 
 
 (comment
-  ;; 1924 = 148 * 13
   (solve-2 "resources/inputs/2021/04-sample.txt")
   (solve-1 "resources/inputs/2021/04-sample.txt")
   )
