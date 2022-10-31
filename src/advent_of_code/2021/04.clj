@@ -113,7 +113,7 @@
   [idxs items]
   (loop [nums idxs cells items]
     (let [{value :value cls :cells board-win-number :board-win-number sum :sum} (process-first nums cells)]
-      (if (= (count cls) 25)
+      (if (every? true? (seq-complete? cls))
         (* value sum)
         (recur (rest nums) (->> cls
                                 (partition 25)

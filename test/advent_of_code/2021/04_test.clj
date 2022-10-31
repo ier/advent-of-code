@@ -16,6 +16,5 @@
   (testing "solve 04 part 2"
     (is (= 1924
            (solve-2 "resources/inputs/2021/04-sample.txt")))
-    #_(is (= nil
-           (solve-2 "resources/inputs/2021/04.txt")
-           ))))
+    (is (= 7296
+           (solve-2 "resources/inputs/2021/04.txt")))))
