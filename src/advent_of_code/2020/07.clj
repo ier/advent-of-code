@@ -60,7 +60,7 @@
     patterns)))
 
 
-(defn solve
+(defn solve-1
   [input-file-name pattern]
   (let [rules (->> input-file-name
                    ->vec-of-str
@@ -70,7 +70,11 @@
         distinct
         count)))
 
+(defn solve-2
+  [input-file-name pattern]
+  )
 
 (comment
-  (solve "resources/inputs/2020/07.txt" "shiny gold")
+  (solve-1 "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
+  (solve-2 "resources/inputs/2020/07-2-test-sample.txt" "shiny gold")
   )
