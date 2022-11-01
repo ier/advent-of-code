@@ -60,19 +60,27 @@
     patterns)))
 
 
+(defn- parse-rules
+  [file-name]
+  (->> file-name
+       ->vec-of-str
+       (map parse-line)))
+
+
 (defn solve-1
   [input-file-name pattern]
-  (let [rules (->> input-file-name
-                   ->vec-of-str
-                   (map parse-line))]
-    (-> (search rules (list pattern) (list))
-        flatten
-        distinct
-        count)))
+  (-> input-file-name
+      parse-rules
+      (search (list pattern) (list))
+      flatten
+      distinct
+      count))
+
 
 (defn solve-2
   [input-file-name pattern]
-  )
+  (-> input-file-name
+      parse-rules))
 
 (comment
   (solve-1 "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
