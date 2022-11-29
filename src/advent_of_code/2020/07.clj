@@ -7,7 +7,7 @@
 (defn- ->hashmap [s]
   (let [[_ amount title] (re-find #"(\d+) (.+$)" s)]
     (when (some? amount)
-      {:title title :amount amount})))
+      {:title title :amount (Integer/parseInt amount)})))
 
 
 (defn- fix [xs]
@@ -76,13 +76,15 @@
       distinct
       count))
 
+
 (defn- fltr
   [rules pattern]
   (filter #(->> % first (= pattern)) rules))
 
+
 (defn- sum
   [found]
-  (reduce + (map #(->> % :amount Integer/parseInt) (second found))))
+  (reduce + (map #(->> % :amount) (second found))))
 
 
 (defn- walk
@@ -92,13 +94,12 @@
    cntr
    (map
     (fn [pattern]
-      (let [found (->> pattern (fltr rules) first)
-            rules* (remove #(->> % first (= pattern)) rules)
-            patterns* (->> found last (map #(:title %)))
-            cntr* (+ cntr (sum found))]
+      (let [found (->> pattern (fltr rules) first)]
         (if (seq found)
-          (walk rules* patterns* cntr*)
-          cntr*)))
+          (walk (remove #(->> % first (= pattern)) rules)
+                (->> found last (map #(:title %)))
+                (+ cntr (sum found)))
+          cntr)))
     patterns)))
 
 
@@ -107,6 +108,7 @@
   (-> input-file-name
       parse-rules
       (walk (list pattern) 0)))
+
 
 (comment
   (solve-1 "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
