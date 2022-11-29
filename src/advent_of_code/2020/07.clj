@@ -76,13 +76,36 @@
       distinct
       count))
 
+(defn- fltr
+  [rules pattern]
+  (filter #(->> % first (= pattern)) rules))
+
+(defn- sum
+  [found]
+  (reduce + (map #(->> % :amount Integer/parseInt) (second found))))
+
+
+(defn- walk
+  [rules pattern]
+  (loop [items rules
+         acc 0]
+    (let [found (->> pattern (fltr items) first)]
+      (if (empty? found)
+       acc
+       (recur (remove
+               #(->> % first (= pattern))
+               items)
+              (+ acc (sum found)))))))
+
 
 (defn solve-2
   [input-file-name pattern]
   (-> input-file-name
-      parse-rules))
+      parse-rules
+      (walk pattern)))
 
 (comment
   (solve-1 "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
   (solve-2 "resources/inputs/2020/07-2-test-sample.txt" "shiny gold")
+  #_(solve-2 "resources/inputs/2020/07.txt" "shiny gold")
   )
