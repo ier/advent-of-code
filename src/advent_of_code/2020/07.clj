@@ -88,26 +88,28 @@
 
 
 (defn- walk
-  [rules patterns cntr]
+  [rules patterns acc]
   (reduce
-   +
-   cntr
+   conj
+   acc
    (map
     (fn [pattern]
       (let [found (->> pattern (fltr rules) first)]
         (if (seq found)
           (walk (remove #(->> % first (= pattern)) rules)
                 (->> found last (map #(:title %)))
-                (+ cntr (sum found)))
-          cntr)))
+                (conj acc (sum found)))
+          acc)))
     patterns)))
+
 
 
 (defn solve-2
   [input-file-name pattern]
   (-> input-file-name
       parse-rules
-      (walk (list pattern) 0)))
+      (walk (list pattern) (list))
+      ))
 
 
 (comment
