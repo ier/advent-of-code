@@ -86,26 +86,30 @@
 
 
 (defn- walk
-  [rules pattern]
-  (loop [items rules
-         acc 0]
-    (let [found (->> pattern (fltr items) first)]
-      (if (empty? found)
-       acc
-       (recur (remove
-               #(->> % first (= pattern))
-               items)
-              (+ acc (sum found)))))))
+  [rules patterns cntr]
+  (reduce
+   +
+   cntr
+   (map
+    (fn [pattern]
+      (let [found (->> pattern (fltr rules) first)
+            rules* (remove #(->> % first (= pattern)) rules)
+            patterns* (->> found last (map #(:title %)))
+            cntr* (+ cntr (sum found))]
+        (if (seq found)
+          (walk rules* patterns* cntr*)
+          cntr*)))
+    patterns)))
 
 
 (defn solve-2
   [input-file-name pattern]
   (-> input-file-name
       parse-rules
-      (walk pattern)))
+      (walk (list pattern) 0)))
 
 (comment
   (solve-1 "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
   (solve-2 "resources/inputs/2020/07-2-test-sample.txt" "shiny gold")
-  #_(solve-2 "resources/inputs/2020/07.txt" "shiny gold")
+  (solve-2 "resources/inputs/2020/07.txt" "shiny gold")
   )
