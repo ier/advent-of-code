@@ -102,18 +102,29 @@
           acc)))
     patterns)))
 
-
+(defn- calculate
+  [xs]
+  (->> xs
+       first
+       (tree-seq list? seq)
+       (filter list?)
+       (filter #(> (count %) 1))
+       (map reverse)
+       (map #(filter number? %))
+       (map #(apply * %))
+       #_(apply +)))
 
 (defn solve-2
   [input-file-name pattern]
   (-> input-file-name
       parse-rules
       (walk (list pattern) (list))
-      ))
+      calculate))
 
 
 (comment
   (solve-1 "resources/inputs/2020/07-1-test-sample.txt" "shiny gold")
+  (solve-1 "resources/inputs/2020/07.txt" "shiny gold")
   (solve-2 "resources/inputs/2020/07-2-test-sample.txt" "shiny gold")
   (solve-2 "resources/inputs/2020/07.txt" "shiny gold")
   )
