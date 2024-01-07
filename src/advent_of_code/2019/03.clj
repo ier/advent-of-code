@@ -87,18 +87,17 @@
   [[px py] [sx sy] [ex ey]]
   (cond
     (and (= px sx ex)
-         (or (<= sy py ey)
-             (>= sy py ey))) (abs (- py sy))
+         (or (< sy py ey)
+             (> sy py ey))) (abs (- py sy))
     (and (= py sy ey)
-         (or (<= sx px ex)
-             (>= sx px ex))) (abs (- px sx))
+         (or (< sx px ex)
+             (> sx px ex))) (abs (- px sx))
     :else (+ (abs (- sx ex)) (abs (- sy ey)))))
 
-(comment
-  {:traces '([[0 0] [0 7] [6 7] [6 3] [2 3]] [[0 0] [8 0] [8 5] [3 5] [3 2]]),
-   :points '([6 5] [3 3]),
-   :dbg '(19 20)}
-  )
+(defn- intersected?
+  [[px py] [sx sy] [ex ey]]
+  (or (= px sx ex)
+      (= py sy ey)))
 
 (defn- len
   [[xs point]]
@@ -108,33 +107,28 @@
       acc
       (let [[p1 p2 & _] turns
             ln (get-ln point p1 p2)]
+        (if (intersected? point p1 p2)
+          (+ acc ln)
+          (recur (next turns)
+                 (+ acc ln)))))))
 
-        (recur (next turns)
-               (+ acc ln))))))
+(defn populate
+  [traces points]
+  (map (fn [p]
+         (map (fn [t]
+                (conj [t] p)) traces))
+       points))
 
 (defn fewest-combined-steps
   [xs]
-  (let [traces (map trace-line xs)
-        points (intersections traces)
-        pairs (->> (interleave traces points)
-                   (partition 2)
-                   (map len))]
-    {:traces traces
-     :points points
-     :dbg pairs}))
-
-(comment
-  ;; 8+5+5+2 = 20
-  ;; 7+6+4+3 = 20
-  ;; 20+20 = 40
-  ;; ...
-  ;; 8+5+2 = 15
-  ;; 7+6+2 = 15
-  ;; 15+15 = 30
-  (fewest-combined-steps
-   ["U7,R6,D4,L4"
-    "R8,U5,L5,D3"])
-  )
+  (let [traces (map trace-line xs)]
+    (->> (intersections traces)
+         (populate traces)
+         (apply concat)
+         (map len)
+         (partition 2)
+         (map #(apply + %))
+         (apply min))))
 
 (comment
   (let [{:keys [traces points result]}
