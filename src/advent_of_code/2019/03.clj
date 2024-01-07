@@ -4,8 +4,8 @@
    [advent-of-code.utils :refer [abs read-by-line]]
    [gnuplot.core :as gpc]))
 
-
-(defn- trace-line [s]
+(defn- trace-line
+  [s]
   (let [xs (split s #",")]
     (loop [moves xs x 0 y 0 acc [[0 0]]]
       (let [value (first moves)
@@ -21,7 +21,6 @@
           acc'
           (recur (rest moves) x' y' acc'))))))
 
-
 (defn- manhattan-distance
   ([p]
    (manhattan-distance [0 0] p))
@@ -29,7 +28,6 @@
    (when (and a b x y)
      (+ (abs (- a x))
         (abs (- b y))))))
-
 
 (defn- cross-point
   [[ax ay] [bx by] [cx cy] [dx dy]]
@@ -51,8 +49,8 @@
     (or (and (= ax bx dx) (< ay dy by))
         (and (= ax bx dx) (> ay dy by))) [dx dy]))
 
-
-(defn- intersections [xs]
+(defn- intersections
+  [xs]
   (let [a (first xs)
         b (second xs)
         result (into
@@ -68,57 +66,89 @@
                       point))))]
     (filter some? result)))
 
-
-(defn closest-intersection-distance [xs]
+(defn closest-intersection-distance
+  [xs]
   (->> xs
        (map trace-line)
        intersections
        (map manhattan-distance)
        (apply min)))
 
-
-(defn solve-1 [filename]
+(defn solve-1
+  [filename]
   (->> filename
        read-by-line
        closest-intersection-distance))
-
 
 (comment
   (solve-1 "resources/inputs/2019/03.txt")
   )
 
-
 (defn- dff
   [[p0x p0y] [p1x p1y] [p2x p2y]]
-  (cond
-    (and (= p0x p1x p2x)
-         (or (< p1y p0y p2y)
-             (> p1y p0y p2y))) (abs (- p1y p0y))
-    (and (= p0y p1y p2y)
-         (or (< p1x p0x p2x)
-             (> p1x p0x p2x))) (abs (- p1x p0x))))
+  (let [result (cond
+                 (and (= p0x p1x p2x)
+                      (or (<= p1y p0y p2y)
+                          (>= p1y p0y p2y))) (- p1y p0y)
+                 (and (= p0y p1y p2y)
+                      (or (<= p1x p0x p2x)
+                          (>= p1x p0x p2x))) (- p1x p0x))]
+    {:in [[p0x p0y] [p1x p1y] [p2x p2y]]
+     :res result}))
 
+(defn- get-ln
+  [[px py] [sx sy] [ex ey]]
+  (cond
+    (and (= px sx ex)
+         (or (<= sy py ey)
+             (>= sy py ey))) (abs (- py sy))
+    (and (= py sy ey)
+         (or (<= sx px ex)
+             (>= sx px ex))) (abs (- px sx))
+    :else (+ (abs (- sx ex)) (abs (- sy ey)))))
+
+(comment
+  {:traces '([[0 0] [0 7] [6 7] [6 3] [2 3]] [[0 0] [8 0] [8 5] [3 5] [3 2]]),
+   :points '([6 5] [3 3]),
+   :dbg '(19 20)}
+  )
 
 (defn- len
-  [xs point]
-  (loop [turns xs acc 0]
+  [[xs point]]
+  (loop [turns xs
+         acc 0]
     (if (= 1 (count turns))
       acc
       (let [p1 (first turns)
             p2 (second turns)
-            diff (dff point p1 p2)]
-        (recur (next turns) (+ acc diff))))))
+            ln (get-ln point p1 p2)]
 
+        (recur (next turns)
+               (+ acc ln))))))
 
 (defn fewest-combined-steps
   [xs]
   (let [traces (map trace-line xs)
         points (intersections traces)
-        #_#_path-pairs-to-point (map #(len traces %) points)]
+        pairs (->> (interleave traces points)
+                   (partition 2)
+                   (map len))]
     {:traces traces
      :points points
-     #_#_:result path-pairs-to-point}))
+     :dbg pairs}))
 
+(comment
+  ;; 8+5+5+2 = 20
+  ;; 7+6+4+3 = 20
+  ;; 20+20 = 40
+  ;; ...
+  ;; 8+5+2 = 15
+  ;; 7+6+2 = 15
+  ;; 15+15 = 30
+  (fewest-combined-steps
+   ["U7,R6,D4,L4"
+    "R8,U5,L5,D3"])
+  )
 
 (comment
   (let [{:keys [traces points result]}
@@ -177,11 +207,11 @@
   (plot)
   )
 
-(defn solve-2 [filename]
+(defn solve-2
+  [filename]
   (->> filename
        read-by-line
        fewest-combined-steps))
-
 
 (comment
   (solve-2 "resources/inputs/2019/03.txt")

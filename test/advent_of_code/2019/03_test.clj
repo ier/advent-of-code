@@ -6,7 +6,6 @@
                                    fewest-combined-steps
                                    solve-2]]))
 
-
 (deftest solve-2019-03-test
   (testing "solve-2019-03-test"
     (is (= 159
