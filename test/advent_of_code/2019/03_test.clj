@@ -6,7 +6,7 @@
                                    fewest-combined-steps
                                    solve-2]]))
 
-(deftest solve-2019-03-test
+(deftest solve-2019-03-01-test
   (testing "solve-2019-03-test"
     (is (= 159
            (closest-intersection-distance
@@ -19,13 +19,14 @@
              "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"])))
 
     (is (= 207
-           (solve-1 "resources/inputs/2019/03.txt")))
+           (solve-1 "resources/inputs/2019/03.txt")))))
 
+(deftest solve-2019-03-02-test
     (is (= 30
            (fewest-combined-steps
             ["U7,R6,D4,L4"
              "R8,U5,L5,D3"])))
-    
+
     (is (= 610
            (fewest-combined-steps
             ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
@@ -37,4 +38,4 @@
              "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7"])))
 
     #_(is (= 42
-           (solve-2 "resources/inputs/2019/03.txt")))))
+           (solve-2 "resources/inputs/2019/03.txt"))))

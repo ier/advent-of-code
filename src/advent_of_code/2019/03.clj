@@ -51,8 +51,7 @@
 
 (defn- intersections
   [xs]
-  (let [a (first xs)
-        b (second xs)
+  (let [[a b & _] xs
         result (into
                 []
                 (for [la (range (dec (count a)))
@@ -84,18 +83,6 @@
   (solve-1 "resources/inputs/2019/03.txt")
   )
 
-(defn- dff
-  [[p0x p0y] [p1x p1y] [p2x p2y]]
-  (let [result (cond
-                 (and (= p0x p1x p2x)
-                      (or (<= p1y p0y p2y)
-                          (>= p1y p0y p2y))) (- p1y p0y)
-                 (and (= p0y p1y p2y)
-                      (or (<= p1x p0x p2x)
-                          (>= p1x p0x p2x))) (- p1x p0x))]
-    {:in [[p0x p0y] [p1x p1y] [p2x p2y]]
-     :res result}))
-
 (defn- get-ln
   [[px py] [sx sy] [ex ey]]
   (cond
@@ -119,8 +106,7 @@
          acc 0]
     (if (= 1 (count turns))
       acc
-      (let [p1 (first turns)
-            p2 (second turns)
+      (let [[p1 p2 & _] turns
             ln (get-ln point p1 p2)]
 
         (recur (next turns)
@@ -163,23 +149,9 @@
       (gpc/list ["-" :title "a" :with :lines]
                 ["-" :title "b" :with :lines]
                 ["-" :title "x" :with :points])]]
-    (conj lines dots)))
+    (conj lines dots))
+   result)
   )
-
-
-(comment
-  ;; 8+5+5+2 = 20
-  ;; 7+6+4+3 = 20
-  ;; 20+20 = 40
-  ;; ...
-  ;; 8+5+2 = 15
-  ;; 7+6+2 = 15
-  ;; 15+15 = 30
-  (fewest-combined-steps
-   ["U7,R6,D4,L4"
-    "R8,U5,L5,D3"])
-  )
-
 
 (defn plot
   "https://github.com/aphyr/gnuplot/issues/6"
