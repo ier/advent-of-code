@@ -137,4 +137,8 @@
 
 (comment
   (solve-2 "resources/inputs/2019/03.txt")
+
+
+  (let [v _]
+    (advent-of-code.core/plot v))
   )
