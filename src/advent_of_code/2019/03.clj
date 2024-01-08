@@ -25,8 +25,8 @@
    (manhattan-distance [0 0] p))
   ([[a b] [x y]]
    (when (and a b x y)
-     (+ (abs (- a x))
-        (abs (- b y))))))
+     (+ (Math/abs (- a x))
+        (Math/abs (- b y))))))
 
 (defn- cross-point
   [[ax ay] [bx by] [cx cy] [dx dy]]
@@ -87,11 +87,11 @@
   (cond
     (and (= px sx ex)
          (or (< sy py ey)
-             (> sy py ey))) (abs (- py sy))
+             (> sy py ey))) (Math/abs (- py sy))
     (and (= py sy ey)
          (or (< sx px ex)
-             (> sx px ex))) (abs (- px sx))
-    :else (+ (abs (- sx ex)) (abs (- sy ey)))))
+             (> sx px ex))) (Math/abs (- px sx))
+    :else (+ (Math/abs (- sx ex)) (Math/abs (- sy ey)))))
 
 (defn- intersected?
   [[px py] [sx sy] [ex ey]]
@@ -138,7 +138,13 @@
 (comment
   (solve-2 "resources/inputs/2019/03.txt")
 
-
-  (let [v _]
-    (advent-of-code.core/plot v))
+  (let [{:keys [traces points result]}
+        (fewest-combined-steps
+         ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
+          "U62,R66,U55,R34,D71,R55,D58,R83"]) ]
+    (advent-of-code.core/plot {:title "Simple test"
+                               :rows-data (conj traces points)
+                               :rows-titles ["a" "b" "x"]
+                               :with [:lines :lines :points]
+                               :range {:min -50 :max 300}}) )
   )
