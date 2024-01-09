@@ -153,5 +153,5 @@
            :rows-data (conj traces points)
            :rows-titles ["a" "b" "x"]
            :with [:lines :lines :points]
-           :range {:min -50 :max 300}})
-    #_{:tr traces :ps points}) )
+           :range {:min -50 :max 300}}))
+  )

@@ -27,7 +27,7 @@
    (let [rows-data (:rows-data m)]
      (gpc/raw-plot!
       [[:set :title (:title m)]
-       [:plot (gpc/range (->> m :range min) (->> m :range max))
+       [:plot (gpc/range (->> m :range :min) (->> m :range :max))
         (gpc/list ["-" :title "a" :with :lines]
                   ["-" :title "b" :with :lines]
                   ["-" :title "x" :with :points])]]
