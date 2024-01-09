@@ -150,7 +150,7 @@
          ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
           "U62,R66,U55,R34,D71,R55,D58,R83"])]
     (plot {:title "Simple test"
-           :rows-data (conj traces points)
+           :rows-data (conj (vec traces) (vec points))
            :rows-titles ["a" "b" "x"]
            :with [:lines :lines :points]
            :range {:min -50 :max 300}}))
