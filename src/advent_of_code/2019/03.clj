@@ -1,7 +1,8 @@
 (ns advent-of-code.2019.03
   (:require
    [clojure.string :refer [split]]
-   [advent-of-code.utils :refer [read-by-line]]))
+   [advent-of-code.utils :refer [read-by-line]]
+   [advent-of-code.core :refer [plot]]))
 
 (defn- trace-line
   [s]
@@ -111,18 +112,24 @@
           (recur (next turns)
                  (+ acc ln)))))))
 
-(defn populate
+(defn- populate
   [traces points]
   (map (fn [p]
          (map (fn [t]
                 (conj [t] p)) traces))
        points))
 
+(defn- calculate
+  [xs]
+  (let [traces (map trace-line xs)
+        points (intersections traces)]
+    {:traces traces
+     :points points}))
+
 (defn fewest-combined-steps
   [xs]
-  (let [traces (map trace-line xs)]
-    (->> (intersections traces)
-         (populate traces)
+  (let [{:keys [traces points]} (calculate xs)]
+    (->> (populate traces points)
          (apply concat)
          (map len)
          (partition 2)
@@ -138,13 +145,13 @@
 (comment
   (solve-2 "resources/inputs/2019/03.txt")
 
-  (let [{:keys [traces points result]}
-        (fewest-combined-steps
+  (let [{:keys [traces points]}
+        (calculate
          ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
-          "U62,R66,U55,R34,D71,R55,D58,R83"]) ]
-    (advent-of-code.core/plot {:title "Simple test"
-                               :rows-data (conj traces points)
-                               :rows-titles ["a" "b" "x"]
-                               :with [:lines :lines :points]
-                               :range {:min -50 :max 300}}) )
-  )
+          "U62,R66,U55,R34,D71,R55,D58,R83"])]
+    (plot {:title "Simple test"
+           :rows-data (conj traces points)
+           :rows-titles ["a" "b" "x"]
+           :with [:lines :lines :points]
+           :range {:min -50 :max 300}})
+    #_{:tr traces :ps points}) )
