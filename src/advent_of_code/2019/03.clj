@@ -145,13 +145,23 @@
 (comment
   (solve-2 "resources/inputs/2019/03.txt")
 
+  (calculate ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
+              "U62,R66,U55,R34,D71,R55,D58,R83"])
+
+  (defn- min-max
+    [traces]
+    (let [items (flatten traces)]
+      [(apply min items) (apply max items)]))
+
   (let [{:keys [traces points]}
-        (calculate
-         ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
-          "U62,R66,U55,R34,D71,R55,D58,R83"])]
+        (->> "resources/inputs/2019/03.txt"
+             read-by-line
+             calculate)
+        [min max] (min-max points)
+        padding 50]
     (plot {:title "Simple test"
            :rows-data (conj (vec traces) (vec points))
            :rows-titles ["a" "b" "x"]
            :with [:lines :lines :points]
-           :range {:min -50 :max 300}}))
+           :range {:min (- min padding) :max (+ max padding)}}))
   )
