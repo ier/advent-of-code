@@ -3,7 +3,7 @@
   :url "https://github.com/ier/advent-of-code"
   :license {:name "MIT"
             :url "https://mit-license.org/"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[org.clojure/clojure "1.11.1"]
                  [gnuplot "0.1.3"]
                  [riddley "0.2.0"]]
   :repl-options {:init-ns advent-of-code.core})
