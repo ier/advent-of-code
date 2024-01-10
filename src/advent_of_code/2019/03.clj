@@ -133,8 +133,8 @@
          (apply concat)
          (map len)
          (partition 2)
-         (map #(apply + %))
-         (apply min))))
+         #_(map #(apply + %))
+         #_(apply min))))
 
 (defn solve-2
   [filename]
@@ -145,20 +145,21 @@
 (comment
   (solve-2 "resources/inputs/2019/03.txt")
 
-  (calculate ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
-              "U62,R66,U55,R34,D71,R55,D58,R83"])
-
   (defn- min-max
     [traces]
     (let [items (flatten traces)]
       [(apply min items) (apply max items)]))
 
-  (let [{:keys [traces points]}
-        (->> "resources/inputs/2019/03.txt"
-             read-by-line
-             calculate)
-        [min max] (min-max points)
-        padding 50]
+  (let [data (read-by-line "resources/inputs/2019/03.txt")
+        data ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
+              "U62,R66,U55,R34,D71,R55,D58,R83"]
+        data ["U7,R6,D3,L2,U3,R2,D4,L4"
+              "R8,U5,L5,D3"]
+        data ["U6,L2,D2,R2,U3,R6,D4,L4"
+              "R8,U5,L5,D3"]
+        {:keys [traces points]} (calculate data)
+        [min max] (min-max traces)
+        padding 0]
     (plot {:title "Simple test"
            :rows-data (conj (vec traces) (vec points))
            :rows-titles ["a" "b" "x"]
