@@ -2,7 +2,8 @@
   (:require
    [clojure.string :refer [split]]
    [advent-of-code.utils :refer [read-by-line]]
-   [advent-of-code.core :refer [plot]]))
+   [clojure.edn :refer [read-string]]
+   [clojure.set :refer [intersection]]))
 
 (defn- trace-line
   [s]
@@ -83,99 +84,50 @@
   (solve-1 "resources/inputs/2019/03.txt")
   )
 
-(defn- get-ln
-  [[px py] [sx sy] [ex ey]]
-  (cond
-    (and (= px sx ex)
-         (or (< sy py ey)
-             (> sy py ey))) (Math/abs (- py sy))
-    (and (= py sy ey)
-         (or (< sx px ex)
-             (> sx px ex))) (Math/abs (- px sx))
-    :else (+ (Math/abs (- sx ex)) (Math/abs (- sy ey)))))
-
-(defn- intersected?
-  [[px py] [sx sy] [ex ey]]
-  (or (= px sx ex)
-      (= py sy ey)))
-
-(defn- len
-  [[xs point]]
-  (loop [turns xs
-         acc 0]
-    (if (= 1 (count turns))
-      acc
-      (let [[p1 p2 & _] turns
-            ln (get-ln point p1 p2)]
-        (if (intersected? point p1 p2)
-          (+ acc ln)
-          (recur (next turns)
-                 (+ acc ln)))))))
-
-(defn- populate
-  [traces points]
-  (map (fn [p]
-         (map (fn [t]
-                (conj [t] p)) traces))
-       points))
-
-(defn- calculate
-  [xs]
-  (let [traces (map trace-line xs)
-        points (intersections traces)]
-    {:traces traces
-     :points points}))
-
-(defn fewest-combined-steps
-  [xs]
-  (let [{:keys [traces points]} (calculate xs)]
-    (->> (populate traces points)
-         (apply concat)
-         (map len)
-         (partition 2)
-         (map #(apply + %))
-         (apply min))))
-
 (defn solve-2
   [filename]
-  (->> filename
-       read-by-line
-       fewest-combined-steps))
+  (let [line-points (fn [start-point [dir steps]]
+                      (let [step-line (case dir
+                                        "U" #(update start-point :y + %)
+                                        "D" #(update start-point :y - %)
+                                        "R" #(update start-point :x + %)
+                                        "L" #(update start-point :x - %))]
+                        (->> steps
+                             inc
+                             (range 1)
+                             (map step-line))))
+        [grid-1 grid-2] (->> filename
+                             read-by-line
+                             (map (fn [s]
+                                    (->> (split s #",")
+                                         (map (fn [s]
+                                                [(subs s 0 1)
+                                                 (read-string (subs s 1))])))))
+                             (map (fn [wire]
+                                    (reduce (fn [grid line]
+                                              (into grid (line-points (last grid) line)))
+                                            [{:x 0 :y 0}]
+                                            wire))))]
+    (->> (intersection (set grid-1) (set grid-2))
+         (map #(+ (.indexOf grid-1 %) (.indexOf grid-2 %)))
+         (filter #(not (zero? %)))
+         (apply min))))
 
 (comment
   (solve-2 "resources/inputs/2019/03.txt")
+  )
 
-  (let [lines (->> "resources/inputs/2019/03.txt"
-                   read-by-line
-                   (map trace-line)
-                   (map (fn [line]
-                          (map (fn [[x y]] (hash-map :x x :y y)) line))))]
-    (clojure.set/intersection (set (first lines)) (set (last lines))))
-
-
-(let [v [[10 1] [11 2] [12 3]]]
-  (map (fn [[x y]] (hash-map :x x :y y)) v))
-
-(let [v (list (list {:x 1 :y 0} {:x 2 :y 2}) (list {:x 1 :y 1} {:x 2 :y 2}))]
-  (clojure.set/intersection (set (first v)) (set (last v))))
-
+(comment
   (let [data (read-by-line "resources/inputs/2019/03.txt")
-        #_#_#_#_#_#_
-        data ["R75,D30,R83,U83,L12,D49,R71,U7,L72"
-              "U62,R66,U55,R34,D71,R55,D58,R83"]
-        data ["U7,R6,D3,L2,U3,R2,D4,L4"
-              "R8,U5,L5,D3"]
-        data ["U6,L2,D2,R2,U3,R6,D4,L4"
-              "R8,U5,L5,D3"]
-        {:keys [traces points]} (calculate data)
+        {:keys [traces points]} nil ;; data processing
         min-max (fn [traces]
                   (let [items (flatten traces)]
                     [(apply min items) (apply max items)]))
-       [min max] (min-max traces)
+        [min max] (min-max traces)
         padding 5]
-    (plot {:title "Simple test"
-           :rows-data (conj (vec traces) (vec points) (first traces))
-           :rows-titles ["a" "b" "x" "d1"]
-           :with [:lines :lines :points :points]
-           :range {:min (- min padding) :max (+ max padding)}}))
+    (advent-of-code.core/plot {:title "Simple test"
+                               :rows-data (conj (vec traces) (vec points) (first traces))
+                               :rows-titles ["a" "b" "x" "d1"]
+                               :with [:lines :lines :points :points]
+                               :range {:min (- min padding) :max (+ max padding)}}))
   )
