@@ -7,7 +7,7 @@
   (->> (split s #"-")
        (map #(Integer/parseInt %))))
 
-(defn has-eq-items-seq? [xs]
+(defn has-pair? [xs]
   (loop [ints xs]
     (if (> (count ints) 1)
       (let [[f s] ints]
@@ -16,16 +16,25 @@
           (recur (next ints))))
       false)))
 
-(defn check [x]
+(defn has-pair-last? [xs]
+  (loop [ints xs]
+    (if (> (count ints) 1)
+      (let [[f s] ints]
+        (if (= f s)
+          true
+          (recur (next ints))))
+      false)))
+
+(defn check [x f]
   (let [nums (digits x)]
     (and
      (apply <= nums)
-     (has-eq-items-seq? nums))))
+     (f nums))))
 
 (defn calc
-  [[start end]]
+  [f [start end]]
   (loop [current start acc 0]
-    (let [acc' (if (check current) (inc acc) acc)]
+    (let [acc' (if (check current f) (inc acc) acc)]
       (if (= current end)
        acc'
        (recur (inc current) acc')))))
@@ -35,8 +44,11 @@
        read-by-line
        first
        parse
-       calc))
+       (calc has-pair?)))
 
-(comment
-  (solve-1 "resources/inputs/2019/04.txt")
-  )
+(defn solve-2 [filename]
+  (->> filename
+       read-by-line
+       first
+       parse
+       (calc has-pair-last?)))
