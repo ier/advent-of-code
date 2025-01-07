@@ -17,13 +17,13 @@
       false)))
 
 (defn has-pair-last? [xs]
-  (loop [ints xs]
-    (if (> (count ints) 1)
-      (let [[f s] ints]
-        (if (= f s)
-          true
-          (recur (next ints))))
-      false)))
+  (loop [ints xs pre2 false pre false res []]
+    (let [[f s] ints
+          current (= f s)
+          res' (conj res (and (false? pre2) (true? pre) (false? current)))]
+      (if (some? s)
+        (recur (next ints) pre current res')
+        (some? (some (set res') [true]))))))
 
 (defn check [x f]
   (let [nums (digits x)]
