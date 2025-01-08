@@ -39,16 +39,16 @@
        acc'
        (recur (inc current) acc')))))
 
-(defn solve-1 [filename]
+(defn process [filename]
   (->> filename
        read-by-line
        first
-       parse
+       parse))
+
+(defn solve-1 [filename]
+  (->> (process filename)
        (calc has-pair?)))
 
 (defn solve-2 [filename]
-  (->> filename
-       read-by-line
-       first
-       parse
+  (->> (process filename)
        (calc has-pair-last?)))
